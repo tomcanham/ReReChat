@@ -1,17 +1,17 @@
-To run this, run the server first -- you can either run it locally in Node (you'll need a newer version of Node.js; I recommend v14 or later) via:
+To run this, run the server first -- you can either run it locally in Go (you'll need a newer version of Go) via:
 
 ```
   cd server
-  npm install
-  node server.js
+  go build .
+  ./chatServer
 ```
 
 Or you can build the docker image:
 
 ```
   cd server
-  docker build . -t node_chat
-  docker run -p 8080:8080 node_chat
+  docker build . -t ReReChat
+  docker run -p 8080:8080 ReReChat
 ```
 
 To run the client, you'll need to build it locally (I haven't Dockerized this yet), so again you'll need a recent version of Node.js (v14 or later) as well as the [Yarn package manager](https://yarnpkg.com/) (it probably would work without Yarn, but I didn't test this with NPM):
