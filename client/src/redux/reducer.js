@@ -52,9 +52,11 @@ function chatReducer(state = initialState, action) {
     case actions.CHANNEL_LEFT:
       return produce(state, draft => {
         const channel = draft.channels[action.channel];
+        const { username } = draft;
+
         channel.users.delete(action.username);
         channel.events.push(action);
-        channel.activity = channel.activity || channel.name !== draft.currentChannel;
+        channel.activity = channel.activity || (action.username !== username && channel.name !== draft.currentChannel);
       });
 
     case actions.CHANNEL_INFO:
@@ -86,10 +88,13 @@ function chatReducer(state = initialState, action) {
 
     case actions.USER_LEAVE: {
       return produce(state, draft => {
+        const channel = draft.channels[action.channel];
+
         draft.joinedChannels.delete(action.channel);
         if (draft.currentChannel === action.channel) {
           draft.currentChannel = null;
         }
+        channel.activity = false;
       });
     }
 
