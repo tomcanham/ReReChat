@@ -1,11 +1,15 @@
-FROM node:14-alpine
+# build stage
+FROM golang:1.15-alpine AS build-env
+RUN apk --no-cache add build-base
 
-RUN mkdir -p /src
-WORKDIR  /src
-COPY package.json .
-RUN npm install
+WORKDIR /go/src/app
+COPY . .
 
-COPY server.js .
-EXPOSE 8080
+RUN cd /go/src/app && go build -o server
 
-ENTRYPOINT node server.js
+# final stage
+FROM alpine
+WORKDIR /app
+COPY --from=build-env /go/src/app/server /app/
+
+CMD ["./server"]
