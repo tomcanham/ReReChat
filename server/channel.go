@@ -4,22 +4,27 @@
 package main
 
 import (
-	"encoding/json"
 	"log"
 )
 
 // ChannelLeaveMessage describes a user leaving a channel
 type ChannelLeaveMessage struct {
-	Type     string `json:"type"`
 	Channel  string `json:"channel"`
 	Username string `json:"username"`
 }
 
+func (msg *ChannelLeaveMessage) TypeName() string {
+	return "channel.left"
+}
+
 // ChannelJoinMessage describes a user joining a channel
 type ChannelJoinMessage struct {
-	Type     string `json:"type"`
 	Channel  string `json:"channel"`
 	Username string `json:"username"`
+}
+
+func (msg *ChannelJoinMessage) TypeName() string {
+	return "channel.joined"
 }
 
 // Channel manages all broadcasting for a chat channel
@@ -61,23 +66,30 @@ func (ch *Channel) broadcast(message []byte) {
 	}
 }
 
+func (ch *Channel) broadcastSelfDescribing(sd SelfDescribing) error {
+	if payload, err := marshalSelfDescribing(sd); err == nil {
+		ch.broadcast(payload)
+		return nil
+	} else {
+		return err
+	}
+}
+
 func (ch *Channel) run() {
 	for {
 		select {
 		case client := <-ch.register:
 			ch.clients[client] = true
 			log.Printf("[CHANNEL: %q] user %q joined channel\n", ch.name, client.username)
-			msg := &ChannelJoinMessage{Type: "channel.joined", Channel: ch.name, Username: client.username}
-			marshalled, _ := json.Marshal(msg)
-			ch.broadcast(marshalled)
+			msg := &ChannelJoinMessage{Channel: ch.name, Username: client.username}
+			ch.broadcastSelfDescribing(msg)
 
 		case client := <-ch.unregister:
 			if _, ok := ch.clients[client]; ok {
-				log.Printf("[CHANNEL: %q] user %q left channel\n", ch.name, client.username)
-				msg := &ChannelLeaveMessage{Type: "channel.left", Channel: ch.name, Username: client.username}
-				marshalled, _ := json.Marshal(msg)
-				ch.broadcast(marshalled)
 				delete(ch.clients, client)
+				log.Printf("[CHANNEL: %q] user %q left channel\n", ch.name, client.username)
+				msg := &ChannelLeaveMessage{Channel: ch.name, Username: client.username}
+				ch.broadcastSelfDescribing(msg)
 			} else {
 				log.Printf("ERROR leaving channel %q\n", ch.name)
 			}

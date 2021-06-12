@@ -1,6 +1,7 @@
 import produce, { enableAllPlugins } from 'immer';
-import { combineReducers } from 'redux';
+
 import { TYPES as actions } from './actions';
+import { combineReducers } from 'redux';
 
 enableAllPlugins(); // make Immer uber!
 
@@ -35,9 +36,8 @@ function chatReducer(state = initialState, action) {
 
     case actions.CHANNELS_LIST:
       return produce(state, draft => {
-        for (const channelInfo of action.channels) {
-          const name = channelInfo.channel;
-          getOrCreateChannel(draft, name);
+        for (const channelName of action.channels) {
+          getOrCreateChannel(draft, channelName);
         }
       });
 
@@ -61,7 +61,9 @@ function chatReducer(state = initialState, action) {
 
     case actions.CHANNEL_INFO:
       return produce(state, draft => {
-        draft.channels[action.channel].users = new Set(action.users);
+        console.log("ACTION:", action);
+        console.log("DRAFT.CHANNELS:", draft.channels);
+        draft.channels[action.name].users = new Set(action.users);
       });
 
     case actions.CHANNEL_CHAT:

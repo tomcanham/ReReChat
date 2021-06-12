@@ -3,7 +3,7 @@ To run this, run the server first -- you can either run it locally in Go (you'll
 ```
   cd server
   go build .
-  ./chatServer
+  ./go_chat
 ```
 
 Or if you don't have the Golang environment installed (or just want an easier build) you can build the docker image:

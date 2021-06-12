@@ -1,10 +1,11 @@
-import jwt from 'jsonwebtoken';
 import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
-import styled from 'styled-components';
+import { getChannelsList as _getChannelsList, doConnect } from './redux/actions';
+
 import Channel from './Channel';
 import ChannelsList from './ChannelsList';
-import { getChannelsList as _getChannelsList, doConnect } from './redux/actions';
+import { connect } from 'react-redux';
+import jwt from 'jsonwebtoken';
+import styled from 'styled-components';
 
 const AppWrapper = styled.div`
   display: flex;
@@ -53,7 +54,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  doConnect: () => dispatch(doConnect({ url: `ws://localhost:8080/ws?jwt=${token.toString()}`, protocol: token.toString() })),
+  doConnect: () => dispatch(doConnect({ url: `ws://localhost:8080/ws?jwt=${token.toString()}` })),
   getChannelsList: () => dispatch(_getChannelsList()),
 });
 

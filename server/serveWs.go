@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
+
+	"github.com/gorilla/websocket"
 )
 
 var upgrader = websocket.Upgrader{
@@ -23,6 +24,4 @@ func serveWs(server *Server, w http.ResponseWriter, r *http.Request, username st
 	}
 
 	createClient(conn, server, username)
-	server.getChannel("General") // insure channel General always exists
-	server.getChannel("Random")  // insure channel Random always exists
 }

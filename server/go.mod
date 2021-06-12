@@ -1,6 +1,6 @@
-module tomcanham.com/chatServer
+module tomcanham.com/go_chat
 
-go 1.15
+go 1.16
 
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible

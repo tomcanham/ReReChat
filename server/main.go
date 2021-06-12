@@ -3,9 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/dgrijalva/jwt-go"
 	"log"
 	"net/http"
+
+	"github.com/dgrijalva/jwt-go"
 )
 
 var addr = flag.String("addr", ":8080", "http service address")
@@ -14,7 +15,7 @@ func authorize(tokenString string) (string, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		// Don't forget to validate the alg is what you expect:
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 
 		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
@@ -35,13 +36,14 @@ func main() {
 	s := getServer()
 
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
-		username, err := authorize(r.Header["Sec-Websocket-Protocol"][0])
+		q := r.URL.Query()
+		username, err := authorize(q.Get("jwt"))
 
 		if err != nil {
 			log.Printf("Authorization error: %v\n", err)
 			http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 		} else {
-			log.Printf("[USER: %q] user connected; initializing Client...\n", username)
+			log.Printf("Connection: %+v, username: %s\n", r.RemoteAddr, username)
 			serveWs(s, w, r, username)
 		}
 	})

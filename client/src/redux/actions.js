@@ -29,11 +29,10 @@ export function getChannelsList() {
   return sendMessage({ type: 'channels.list' });
 }
 
-export function doConnect({ url, protocol }) {
+export function doConnect({ url }) {
   return {
     type: TYPES.CONNECT,
     url,
-    protocol,
   };
 }
 

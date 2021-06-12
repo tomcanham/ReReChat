@@ -20,9 +20,26 @@ func getServer() *Server {
 		_serverInstance = &Server{
 			channels: make(map[string]*Channel),
 		}
+
+		_serverInstance.getChannel("General")
 	})
 
 	return _serverInstance
+}
+
+func (s *Server) getChannelsListMessage() ChannelsListMessage {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	channels := make([]string, len(s.channels))
+
+	for name := range s.channels {
+		channels = append(channels, name)
+	}
+
+	return ChannelsListMessage{
+		Channels: channels,
+	}
 }
 
 func (s *Server) getChannel(name string) *Channel {
