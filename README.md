@@ -22,6 +22,6 @@ To run the client, you'll need to build it locally (I haven't Dockerized this ye
   yarn start
 ```
 
-Open a web browser to http://localhost:3000 to view the client app. Right now, each user to this page is given a different randomly generated name (starting with "tom"). Additionally, two "channels" (`General` and `Random`) are precreated by the server. This makes it easy to open multiple tabs to the client page and see how the two clients can see each other's actions.
+Open a web browser to http://localhost:3000 to view the client app. Right now, each user to this page is given a different randomly generated name (starting with "tom"). Additionally, a "channel" (`General`) is precreated by the server. This makes it easy to open multiple tabs to the client page and see how the two clients can see each other's actions.
 
 Many bugs remain to be resolved, features to be added...
